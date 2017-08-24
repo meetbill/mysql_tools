@@ -1,13 +1,18 @@
-#!/bin/sh
-#this script is to backup mysql.
-#author:Bill
-#date:2015-10-14
-#history:one First release
-today=`date +%Y-%m-%d`
+#!/bin/bash
+#########################################################################
+# File Name: w.sh
+# Author: meetbill
+# mail: meetbill@163.com
+# Created Time: 2015-10-14 11:49:17
+# this script is to backup mysql.
+#########################################################################
+today=`date +%Y%m%d-%H-%M-%S`
 config_path="/opt/X_crontab/mysqlbackup/backupdb.config"
-keepday=100
+keepday=90
 log_name="mysql_backup.log"
 db_exclude_list='(test|mysql|information_schema|performance_schema)'
+version="1.0.2"
+
 #{{{init_value
 function init_value()
 {
@@ -35,7 +40,7 @@ function make_log()
     if [ ! -e $log_name ] ;then 
        touch $log_name
        chmod 755 $log_name
-       sed -i '$a '"$today:"' create log file success' $log_name
+       echo "version:[${version}] time:[$today] action:[create log file success]" >> $log_name
     fi 
     if [ ! -w $log_name -o ! -x $log_name ] ;then
        chmod 755 $log_name
@@ -47,7 +52,6 @@ function output_log()
 {
   
   echo "$1" >> $log_dir/$log_name
- 
 }
 #}}}
 #{{{check_dir
@@ -56,7 +60,6 @@ function check_dir()
    target_dir=$1
    if [ -e $target_dir/$today ] ;then
        output_log "$today has backup,now it will be overwrite"
-       
    fi
 }
 #}}}
@@ -66,7 +69,7 @@ function mk_dir(){
     if [ ! -e $target_dir/$today ]
     then
         mkdir -p $target_dir/$today/
-        output_log "create dir $today success"
+        output_log "version:[${version}] create dir $today success"
     fi
     if [ ! -r $target_dir/$today ]
     then
@@ -95,7 +98,6 @@ function db_backup(){
             output_log "success backup $i"
         else
             output_log "fail backup $i"
-        
         fi
     done
 }
@@ -119,17 +121,15 @@ function rm_old_dir()
 #}}}
 function make_multiple()
 {
-init_value
-make_log
+    init_value
+    make_log
 
-for diri in $back_dir
-
-do
-check_dir $diri
-mk_dir $diri
-db_backup $diri
-rm_old_dir $diri
-
-done
+    for diri in $back_dir
+    do
+        check_dir $diri
+        mk_dir $diri
+        db_backup $diri
+        rm_old_dir $diri
+    done
 }
 make_multiple
