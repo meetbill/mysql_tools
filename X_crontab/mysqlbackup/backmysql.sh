@@ -11,7 +11,7 @@ config_path="/opt/X_crontab/mysqlbackup/backupdb.config"
 keepday=90
 log_name="mysql_backup.log"
 db_exclude_list='(test|mysql|information_schema|performance_schema)'
-version="1.0.2"
+version="1.0.3"
 
 #{{{init_value
 function init_value()
@@ -40,7 +40,7 @@ function make_log()
     if [ ! -e $log_name ] ;then 
        touch $log_name
        chmod 755 $log_name
-       echo "version:[${version}] time:[$today] action:[create log file success]" >> $log_name
+       echo "version:[${version}] time:[$today] action:[create log file OK]" >> $log_name
     fi 
     if [ ! -w $log_name -o ! -x $log_name ] ;then
        chmod 755 $log_name
@@ -69,7 +69,7 @@ function mk_dir(){
     if [ ! -e $target_dir/$today ]
     then
         mkdir -p $target_dir/$today/
-        output_log "version:[${version}] create dir $today success"
+        output_log "version:[${version}] create dir $today OK"
     fi
     if [ ! -r $target_dir/$today ]
     then
@@ -87,32 +87,33 @@ function db_backup(){
         if [ "$db_in" == "" ] ; then
              continue
         fi         
-       # echo "db backup $i"
+        # echo "db backup $i"
         errno=`$db_dump -h $db_addr -u$mysql_account -p$mysql_password -P $db_port  $i  | gzip > $target_dir/$today/${i}.gz`
-	if [ "$errno" == "" ] ; then
+	    if [ "$errno" == "" ] ; then
             if [ w${bos} == w"ON" ]
             then
                 cd /opt/X_crontab/mysqlbackup/bce/
                 python bos.py --key /$today/${i}.gz --file $target_dir/$today/${i}.gz
             fi
-            output_log "success backup $i"
+            output_log "${today} success backup $i"
         else
-            output_log "fail backup $i"
+            output_log "${today} fail backup $i"
         fi
     done
 }
 #}}}
 #{{{rm_old_dir
 function rm_old_dir()
-{
+{   
     target_dir=$1
     cd $target_dir 
-    for i in `ls $target_dir/ | grep -E "^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$"`
-     do
-        n=$(echo "$(date +%s) - $(date -d "$i" +%s)"| bc )
+    for i in `ls $target_dir/ | grep -E "^[0-9]{8}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$"`
+    do
+
+        history_dir=`echo $i | awk -F - '{print $1}'`
+        n=$(echo "$(date +%s) - $(date -d "$history_dir" +%s)"| bc )
         time_second=$(($keepday*86400))
         if [ -d $i -a $n -ge $time_second ] ; then
-              
             rm -rf $target_dir/$i
             output_log "$i timeout,it is deleted"
         fi
