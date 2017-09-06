@@ -1,11 +1,18 @@
 # mysql_tools
 
-> * 备份，可以备份到本地目录及bos
+> * 备份工具，可以备份到本地目录及bos
+> * 修复工具，mysql 主从异常后修复
 
-## 【目录】
-----
-[0 安装](docs/install.md)  
-[1 配置](docs/config.md)  
+## 目录
+
+### 备份工具
+
+> * [0 安装](docs/install.md)  
+> * [1 配置](docs/config.md)  
+
+### 修复工具
+
+> * [修复工具使用](https://github.com/BillWang139967/mysql_tools/wiki/repair_tools)
 
 ## 版本
 
