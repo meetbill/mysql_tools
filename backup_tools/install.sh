@@ -1,9 +1,10 @@
+#!/bin/bash
 #########################################################################
 # File Name: install.sh
-# Author: Bill
-# mail: XXXXXXX@qq.com
-# Created Time: 2016-07-06 09:30:34
+# Author: meetbill
+# mail: meetbill@163.com
+# Created Time: 2017-10-19 23:10:35
 #########################################################################
 #!/bin/bash
 cp -rf X_crontab /opt/
-sh /opt/X_crontab/initCrontab.sh
+bash /opt/X_crontab/initCrontab.sh

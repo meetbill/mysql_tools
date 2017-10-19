@@ -11,7 +11,7 @@ config_path="/opt/X_crontab/mysqlbackup/backupdb.config"
 keepday=90
 log_name="mysql_backup.log"
 db_exclude_list='(test|mysql|information_schema|performance_schema)'
-version="1.0.3"
+version="1.0.4"
 
 #{{{init_value
 function init_value()
@@ -25,7 +25,6 @@ function init_value()
     db_port=`cat $config_path | grep "db_port" | awk -F = '{print $2}' `
     db_list=`cat $config_path | grep "db_list" | awk -F = '{print $2}' `
     log_dir=`cat $config_path | grep "log_dir" | awk -F = '{print $2}' `
-    bos=`cat $config_path | grep "bos" | awk -F = '{print $2}' `
 }
 #}}}
 #{{{make_log
@@ -90,11 +89,6 @@ function db_backup(){
         # echo "db backup $i"
         errno=`$db_dump -h $db_addr -u$mysql_account -p$mysql_password -P $db_port  $i  | gzip > $target_dir/$today/${i}.gz`
 	    if [ "$errno" == "" ] ; then
-            if [ w${bos} == w"ON" ]
-            then
-                cd /opt/X_crontab/mysqlbackup/bce/
-                python bos.py --key /$today/${i}.gz --file $target_dir/$today/${i}.gz
-            fi
             output_log "${today} success backup $i"
         else
             output_log "${today} fail backup $i"

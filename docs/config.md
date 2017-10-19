@@ -1,13 +1,5 @@
 # config
 
-<!-- vim-markdown-toc GFM -->
-* [备份数据库到本地目录](#备份数据库到本地目录)
-* [备份数据库到bos](#备份数据库到bos)
-
-<!-- vim-markdown-toc -->
-
-### 备份数据库到本地目录
-
 修改配置文件
 
 /opt/X_crontab/mysqlbackup/backupdb.config
@@ -29,21 +21,4 @@ back_dir=/data/mysqlbackup
 # 需要备份的数据库
 db_list=database1|database2|database3
 log_dir=/data/mysqlbackup/logs
-bos=OFF
-```
-### 备份数据库到bos
-
-(1)修改配置文件
-/opt/X_crontab/mysqlbackup/backupdb.config
-
-```
-bos=ON
-```
-(2)修改配置文件
-/opt/X_crontab/mysqlbackup/bce/bos_conf.py
-
-```
-HOST = ''
-AK = ''
-SK = ''
 ```
