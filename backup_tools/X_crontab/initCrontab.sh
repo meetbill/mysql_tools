@@ -5,6 +5,14 @@
 # mail: meetbill@163.com
 # Created Time: 2017-10-19 23:10:35
 #########################################################################
+function EnvCheck(){
+    bc_check=$(rpm -qa | grep ^bc | wc -l)
+    if [[ "w0" == "w${bc_check}" ]]
+    then
+        echo -e "\e[1;31mplease exe 'yum -y install bc'\e[0m"
+    fi
+	return 0
+}
 function InitCrontab(){
 	echo "initCrontab"
 	crontab -l -u root > mycron
@@ -20,4 +28,5 @@ function InitCrontab(){
 
 CUR_DIR=$(cd `dirname $0`; pwd)
 cd ${CUR_DIR}
+EnvCheck
 InitCrontab
